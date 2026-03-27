@@ -73,21 +73,28 @@ const RoomView = () => {
       {/* Game Selection */}
       {isHost ? (
         <>
-          <h2 className="font-heading text-sm uppercase tracking-widest text-primary mb-4">
-            Elige un juego
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-            {GAMES.map((game) => (
-              <button
-                key={game.id}
-                onClick={() => handleSelectGame(game.id)}
-                className={`glass-card rounded-xl p-4 flex flex-col items-center gap-2 hover:neon-border transition-all bg-gradient-to-br ${game.color}`}
-              >
-                <span className="text-3xl">{game.emoji}</span>
-                <span className="font-heading text-xs font-semibold text-foreground">{game.name}</span>
-              </button>
-            ))}
-          </div>
+          {(["memoria", "proporciones", "mixto"] as const).map((cat) => {
+            const catGames = GAMES.filter((g) => g.category === cat);
+            const catLabel = cat === "memoria" ? "🧠 Memoria y Secuencias" : cat === "proporciones" ? "📐 Proporciones" : "🧩 Mixto";
+            return (
+              <div key={cat} className="mb-6">
+                <h2 className="font-heading text-sm uppercase tracking-widest text-primary mb-3">{catLabel}</h2>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                  {catGames.map((game) => (
+                    <button
+                      key={game.id}
+                      onClick={() => handleSelectGame(game.id)}
+                      className={`glass-card rounded-xl p-4 flex flex-col items-center gap-1.5 hover:neon-border transition-all bg-gradient-to-br ${game.color}`}
+                    >
+                      <span className="text-2xl">{game.emoji}</span>
+                      <span className="font-heading text-xs font-semibold text-foreground">{game.name}</span>
+                      <span className="text-[10px] text-muted-foreground leading-tight text-center">{game.description}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </>
       ) : (
         <div className="glass-card rounded-xl p-10 text-center">
