@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGame } from "@/contexts/GameContext";
 import { GAMES } from "@/data/games";
@@ -9,10 +10,11 @@ const RoomView = () => {
 
   const room = rooms.find((r) => r.id === roomId);
 
-  if (!player) {
-    navigate("/");
-    return null;
-  }
+  useEffect(() => {
+    if (!player) navigate("/");
+  }, [player, navigate]);
+
+  if (!player) return null;
 
   if (!room) {
     return (
@@ -37,10 +39,7 @@ const RoomView = () => {
     navigate("/lobby");
   };
 
-  if (room.status === "playing" && room.gameId) {
-    navigate(`/play/${room.id}/${room.gameId}`);
-    return null;
-  }
+  // Don't auto-redirect - let players choose from room view
 
   return (
     <div className="min-h-screen p-4 max-w-3xl mx-auto">
