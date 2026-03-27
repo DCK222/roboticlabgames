@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGame } from "@/contexts/GameContext";
 import { GAMES } from "@/data/games";
@@ -9,10 +10,11 @@ const RoomView = () => {
 
   const room = rooms.find((r) => r.id === roomId);
 
-  if (!player) {
-    navigate("/");
-    return null;
-  }
+  useEffect(() => {
+    if (!player) navigate("/");
+  }, [player, navigate]);
+
+  if (!player) return null;
 
   if (!room) {
     return (

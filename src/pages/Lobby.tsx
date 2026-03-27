@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGame } from "@/contexts/GameContext";
 
@@ -7,10 +7,11 @@ const Lobby = () => {
   const [roomName, setRoomName] = useState("");
   const navigate = useNavigate();
 
-  if (!player) {
-    navigate("/");
-    return null;
-  }
+  useEffect(() => {
+    if (!player) navigate("/");
+  }, [player, navigate]);
+
+  if (!player) return null;
 
   const handleCreate = () => {
     if (!roomName.trim()) return;
