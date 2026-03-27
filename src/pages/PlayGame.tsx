@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useGame } from "@/contexts/GameContext";
 import { GAMES } from "@/data/games";
@@ -12,6 +12,21 @@ import SpeedGame from "@/games/SpeedGame";
 import CountGame from "@/games/CountGame";
 import ChainGame from "@/games/ChainGame";
 import DifferGame from "@/games/DifferGame";
+import ReverseGame from "@/games/ReverseGame";
+import PatternGame from "@/games/PatternGame";
+import ShapeSequenceGame from "@/games/ShapeSequenceGame";
+import DoubleHalfGame from "@/games/DoubleHalfGame";
+import ProportionTableGame from "@/games/ProportionTableGame";
+import RecipeGame from "@/games/RecipeGame";
+import MixGame from "@/games/MixGame";
+import FractionMatchGame from "@/games/FractionMatchGame";
+import ScaleGame from "@/games/ScaleGame";
+import MoneyGame from "@/games/MoneyGame";
+import RatioGame from "@/games/RatioGame";
+import MemoryProportionGame from "@/games/MemoryProportionGame";
+import GestureGame from "@/games/GestureGame";
+import WordChainGame from "@/games/WordChainGame";
+import ObjectMemoryGame from "@/games/ObjectMemoryGame";
 
 const GAME_COMPONENTS: Record<string, React.ComponentType<{ onComplete: (score: number) => void }>> = {
   memory: MemoryGame,
@@ -24,6 +39,21 @@ const GAME_COMPONENTS: Record<string, React.ComponentType<{ onComplete: (score: 
   count: CountGame,
   chain: ChainGame,
   differ: DifferGame,
+  reverse: ReverseGame,
+  pattern: PatternGame,
+  shapes: ShapeSequenceGame,
+  doublehalf: DoubleHalfGame,
+  proptable: ProportionTableGame,
+  recipe: RecipeGame,
+  mix: MixGame,
+  fractions: FractionMatchGame,
+  scale: ScaleGame,
+  money: MoneyGame,
+  ratio: RatioGame,
+  memprop: MemoryProportionGame,
+  gesture: GestureGame,
+  wordchain: WordChainGame,
+  objects: ObjectMemoryGame,
 };
 
 const PlayGame = () => {
@@ -38,6 +68,10 @@ const PlayGame = () => {
   const [scores, setScores] = useState<Record<string, number>>({});
   const [phase, setPhase] = useState<"playing" | "waiting" | "results">("playing");
   const [gameKey, setGameKey] = useState(0);
+
+  useEffect(() => {
+    if (!player) navigate("/");
+  }, [player, navigate]);
 
   const handleComplete = useCallback((score: number) => {
     if (!room) return;
@@ -73,10 +107,6 @@ const PlayGame = () => {
     navigate("/lobby");
   };
 
-  useEffect(() => {
-    if (!player) navigate("/");
-  }, [player, navigate]);
-
   if (!player) return null;
   if (!room || !game) {
     return (
@@ -99,7 +129,6 @@ const PlayGame = () => {
         <div className="w-12" />
       </header>
 
-      {/* Scores bar */}
       <div className="flex gap-3 mb-4 justify-center flex-wrap">
         {room.players.map((p, i) => (
           <div
