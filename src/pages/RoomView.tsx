@@ -37,10 +37,7 @@ const RoomView = () => {
     navigate("/lobby");
   };
 
-  if (room.status === "playing" && room.gameId) {
-    navigate(`/play/${room.id}/${room.gameId}`);
-    return null;
-  }
+  // Don't auto-redirect - let players choose from room view
 
   return (
     <div className="min-h-screen p-4 max-w-3xl mx-auto">
