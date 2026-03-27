@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback, ReactNode } from "react";
+import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from "react";
 
 export interface Player {
   id: string;
@@ -26,6 +26,7 @@ interface GameContextType {
   currentRoom: Room | null;
 }
 
+const ROOMS_KEY = "roboticlab_rooms";
 const GameContext = createContext<GameContextType | null>(null);
 
 export const useGame = () => {
@@ -34,9 +35,61 @@ export const useGame = () => {
   return ctx;
 };
 
+const loadRooms = (): Room[] => {
+  try {
+    return JSON.parse(localStorage.getItem(ROOMS_KEY) || "[]");
+  } catch {
+    return [];
+  }
+};
+
+const saveRooms = (rooms: Room[]) => {
+  localStorage.setItem(ROOMS_KEY, JSON.stringify(rooms));
+};
+
 export const GameProvider = ({ children }: { children: ReactNode }) => {
   const [player, setPlayer] = useState<Player | null>(null);
-  const [rooms, setRooms] = useState<Room[]>([]);
+  const [rooms, setRooms] = useState<Room[]>(loadRooms);
+
+  // Sync rooms to localStorage whenever they change
+  useEffect(() => {
+    saveRooms(rooms);
+  }, [rooms]);
+
+  // Listen for changes from other tabs
+  useEffect(() => {
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === ROOMS_KEY && e.newValue) {
+        try {
+          setRooms(JSON.parse(e.newValue));
+        } catch {}
+      }
+    };
+    window.addEventListener("storage", handleStorage);
+
+    // Also use BroadcastChannel for same-origin tabs
+    let bc: BroadcastChannel | null = null;
+    try {
+      bc = new BroadcastChannel("roboticlab_sync");
+      bc.onmessage = () => {
+        setRooms(loadRooms());
+      };
+    } catch {}
+
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+      bc?.close();
+    };
+  }, []);
+
+  // Broadcast changes to other tabs
+  const broadcastChange = useCallback(() => {
+    try {
+      const bc = new BroadcastChannel("roboticlab_sync");
+      bc.postMessage("update");
+      bc.close();
+    } catch {}
+  }, []);
 
   const setPlayerName = useCallback((name: string) => {
     setPlayer({ id: crypto.randomUUID(), name });
@@ -53,29 +106,37 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       gameId: null,
       status: "waiting",
     };
-    setRooms((prev) => [...prev, room]);
+    setRooms((prev) => {
+      const next = [...prev, room];
+      saveRooms(next);
+      return next;
+    });
+    broadcastChange();
     return room.id;
-  }, [player]);
+  }, [player, broadcastChange]);
 
   const joinRoom = useCallback((roomId: string): boolean => {
     if (!player) return false;
     let joined = false;
-    setRooms((prev) =>
-      prev.map((r) => {
+    setRooms((prev) => {
+      const next = prev.map((r) => {
         if (r.id === roomId && r.players.length < r.maxPlayers && !r.players.find((p) => p.id === player.id)) {
           joined = true;
           return { ...r, players: [...r.players, player] };
         }
         return r;
-      })
-    );
+      });
+      saveRooms(next);
+      return next;
+    });
+    broadcastChange();
     return joined;
-  }, [player]);
+  }, [player, broadcastChange]);
 
   const leaveRoom = useCallback((roomId: string) => {
     if (!player) return;
-    setRooms((prev) =>
-      prev
+    setRooms((prev) => {
+      const next = prev
         .map((r) => {
           if (r.id === roomId) {
             const newPlayers = r.players.filter((p) => p.id !== player.id);
@@ -84,19 +145,33 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
           }
           return r;
         })
-        .filter(Boolean) as Room[]
-    );
-  }, [player]);
+        .filter(Boolean) as Room[];
+      saveRooms(next);
+      return next;
+    });
+    broadcastChange();
+  }, [player, broadcastChange]);
 
   const startGame = useCallback((roomId: string, gameId: string) => {
-    setRooms((prev) =>
-      prev.map((r) =>
+    setRooms((prev) => {
+      const next = prev.map((r) =>
         r.id === roomId ? { ...r, gameId, status: "playing" as const } : r
-      )
-    );
-  }, []);
+      );
+      saveRooms(next);
+      return next;
+    });
+    broadcastChange();
+  }, [broadcastChange]);
 
   const currentRoom = rooms.find((r) => r.players.some((p) => p.id === player?.id)) || null;
+
+  // Poll for room updates every 2 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRooms(loadRooms());
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <GameContext.Provider value={{ player, setPlayerName, rooms, createRoom, joinRoom, leaveRoom, startGame, currentRoom }}>
