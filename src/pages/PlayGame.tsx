@@ -73,7 +73,11 @@ const PlayGame = () => {
     navigate("/lobby");
   };
 
-  if (!player) { navigate("/"); return null; }
+  useEffect(() => {
+    if (!player) navigate("/");
+  }, [player, navigate]);
+
+  if (!player) return null;
   if (!room || !game) {
     return (
       <div className="flex min-h-screen items-center justify-center flex-col gap-4">
