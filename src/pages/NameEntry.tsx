@@ -13,17 +13,17 @@ const NameEntry = () => {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-4 gap-6">
-      <img src={logo} alt="Roboticlab" className="w-72 md:w-96" />
-      <h1 className="font-heading text-5xl md:text-6xl font-black tracking-wider neon-text text-primary">
+    <div className="flex min-h-screen flex-col items-center justify-center px-4 py-8 gap-4 sm:gap-6">
+      <img src={logo} alt="Roboticlab" className="w-48 sm:w-72 md:w-96" />
+      <h1 className="font-heading text-3xl sm:text-5xl md:text-6xl font-black tracking-wider neon-text text-primary">
         GAMES
       </h1>
-      <p className="text-muted-foreground text-lg font-medium text-center">
+      <p className="text-muted-foreground text-sm sm:text-lg font-medium text-center">
         Juegos educativos multijugador
       </p>
       <button
         onClick={handleEnter}
-        className="mt-4 rounded-xl bg-primary px-12 py-4 font-heading text-lg font-bold uppercase tracking-widest text-primary-foreground transition-all hover:opacity-90 hover:scale-105 neon-border"
+        className="mt-2 sm:mt-4 rounded-xl bg-primary px-8 sm:px-12 py-3 sm:py-4 font-heading text-base sm:text-lg font-bold uppercase tracking-widest text-primary-foreground transition-all hover:opacity-90 hover:scale-105 neon-border"
       >
         🚀 Entrar
       </button>
