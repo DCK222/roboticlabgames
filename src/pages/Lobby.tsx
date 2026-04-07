@@ -1,10 +1,22 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGame } from "@/contexts/GameContext";
+import { GAMES } from "@/data/games";
+import logo from "@/assets/logo.webp";
+
+const CATEGORY_LABELS: Record<string, string> = {
+  memoria: "🧠 Memoria y Secuencias",
+  proporciones: "📐 Proporciones",
+  mixto: "🧩 Mixto",
+  matematicas: "➕ Matemáticas Online",
+  logica: "🧩 Reta Tu Mente — Lógica y Números",
+  quimica: "⚗️ Tabla Periódica",
+};
+
+const CATEGORIES = ["memoria", "proporciones", "mixto", "matematicas", "logica", "quimica"] as const;
 
 const Lobby = () => {
-  const { player, rooms, createRoom, joinRoom } = useGame();
-  const [roomName, setRoomName] = useState("");
+  const { player, createRoom, startGame } = useGame();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -13,91 +25,64 @@ const Lobby = () => {
 
   if (!player) return null;
 
-  const handleCreate = () => {
-    if (!roomName.trim()) return;
-    const id = createRoom(roomName.trim());
+  const handlePlayGame = (gameId: string) => {
+    const id = createRoom("Partida rápida");
     if (id) {
-      setRoomName("");
-      navigate(`/room/${id}`);
+      startGame(id, gameId);
+      navigate(`/play/${id}/${gameId}`);
     }
   };
 
-  const handleJoin = (roomId: string) => {
-    joinRoom(roomId);
-    navigate(`/room/${roomId}`);
-  };
-
   return (
-    <div className="min-h-screen p-4 max-w-2xl mx-auto">
+    <div className="min-h-screen p-4 max-w-5xl mx-auto">
       <header className="flex items-center justify-between py-6">
-        <h1 className="font-heading text-2xl font-bold neon-text text-primary">
-          🤖 RoboticlabGAMES
-        </h1>
+        <div className="flex items-center gap-3">
+          <img src={logo} alt="Roboticlab" className="h-8" />
+          <h1 className="font-heading text-2xl font-bold neon-text text-primary">GAMES</h1>
+        </div>
         <span className="glass-card rounded-full px-4 py-1.5 text-sm font-semibold text-secondary-foreground">
           {player.name}
         </span>
       </header>
 
-      {/* Create Room */}
-      <div className="glass-card neon-border rounded-xl p-6 mb-6">
-        <h2 className="font-heading text-sm uppercase tracking-widest text-primary mb-4">
-          Crear Sala
-        </h2>
-        <div className="flex gap-3">
-          <input
-            value={roomName}
-            onChange={(e) => setRoomName(e.target.value)}
-            placeholder="Nombre de la sala..."
-            maxLength={30}
-            className="flex-1 rounded-lg bg-secondary px-4 py-2.5 text-foreground outline-none border border-border focus:border-primary transition-all placeholder:text-muted-foreground"
-          />
-          <button
-            onClick={handleCreate}
-            disabled={!roomName.trim()}
-            className="rounded-lg bg-primary px-6 py-2.5 font-heading text-xs font-bold uppercase tracking-widest text-primary-foreground hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-          >
-            Crear
-          </button>
-        </div>
-      </div>
+      {CATEGORIES.map((cat) => {
+        const catGames = GAMES.filter((g) => g.category === cat);
+        if (catGames.length === 0) return null;
+        return (
+          <div key={cat} className="mb-8">
+            <h2 className="font-heading text-sm uppercase tracking-widest text-primary mb-3">
+              {CATEGORY_LABELS[cat]}
+            </h2>
 
-      {/* Room List */}
-      <div>
-        <h2 className="font-heading text-sm uppercase tracking-widest text-primary mb-4">
-          Salas Disponibles
-        </h2>
-        {rooms.length === 0 ? (
-          <div className="glass-card rounded-xl p-10 text-center">
-            <p className="text-muted-foreground text-lg">No hay salas aún</p>
-            <p className="text-muted-foreground text-sm mt-1">¡Crea la primera!</p>
-          </div>
-        ) : (
-          <div className="flex flex-col gap-3">
-            {rooms.map((room) => (
-              <div
-                key={room.id}
-                className="glass-card rounded-xl p-5 flex items-center justify-between hover:neon-border transition-all"
+            {cat === "quimica" && (
+              <button
+                onClick={() => navigate("/tabla-periodica")}
+                className="mb-4 glass-card neon-border rounded-xl px-6 py-3 flex items-center gap-3 hover:opacity-90 transition-all"
               >
-                <div>
-                  <h3 className="font-heading text-base font-semibold text-foreground">
-                    {room.name}
-                  </h3>
-                  <p className="text-sm text-muted-foreground mt-0.5">
-                    {room.players.length}/{room.maxPlayers} jugadores · {room.status === "waiting" ? "Esperando" : "Jugando"}
-                  </p>
+                <span className="text-3xl">🗺️</span>
+                <div className="text-left">
+                  <span className="font-heading text-sm font-bold text-foreground">Ver Tabla Periódica Interactiva</span>
+                  <p className="text-xs text-muted-foreground">Explora todos los elementos con sus propiedades</p>
                 </div>
+              </button>
+            )}
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+              {catGames.map((game) => (
                 <button
-                  onClick={() => handleJoin(room.id)}
-                  disabled={room.players.length >= room.maxPlayers || room.players.some((p) => p.id === player.id)}
-                  className="rounded-lg bg-primary px-5 py-2 font-heading text-xs font-bold uppercase tracking-widest text-primary-foreground hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                  key={game.id}
+                  onClick={() => handlePlayGame(game.id)}
+                  className={`glass-card rounded-xl p-3 flex flex-col items-center gap-1 hover:neon-border transition-all bg-gradient-to-br ${game.color}`}
                 >
-                  {room.players.some((p) => p.id === player.id) ? "Dentro" : "Unirse"}
+                  <span className="text-2xl">{game.emoji}</span>
+                  <span className="font-heading text-xs font-semibold text-foreground leading-tight">{game.name}</span>
+                  <span className="text-[9px] text-muted-foreground leading-tight text-center line-clamp-2">{game.description}</span>
                 </button>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        )}
-      </div>
+        );
+      })}
     </div>
   );
 };
