@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import MiniPeriodicTable from "@/components/MiniPeriodicTable";
 
 interface Props {
   onComplete: (score: number) => void;
@@ -318,32 +319,49 @@ const ChemistryGame = ({ onComplete, variant = "symbol_to_name" }: Props) => {
     }, 1200);
   }, [feedback, problem, round, score, variant, onComplete]);
 
+  const [showTable, setShowTable] = useState(false);
+
   return (
-    <div className="glass-card neon-border rounded-xl p-6 text-center">
-      <div className="flex justify-between text-sm text-muted-foreground mb-4">
-        <span>Ronda {round + 1}/{totalRounds}</span>
-        <span>⏱️ {timeLeft}s</span>
-        <span>⭐ {score}</span>
+    <div className="space-y-4">
+      <div className="glass-card neon-border rounded-xl p-4 sm:p-6 text-center">
+        <div className="flex justify-between text-sm text-muted-foreground mb-4">
+          <span>Ronda {round + 1}/{totalRounds}</span>
+          <span>⏱️ {timeLeft}s</span>
+          <span>⭐ {score}</span>
+        </div>
+
+        <div className="text-xl font-heading font-bold text-foreground mb-6 min-h-[80px] flex items-center justify-center px-2">
+          {problem.question}
+        </div>
+
+        {feedback && <div className="text-lg mb-4 font-semibold">{feedback}</div>}
+
+        <div className="grid grid-cols-2 gap-3">
+          {problem.options.map((opt, i) => (
+            <button
+              key={i}
+              onClick={() => handleAnswer(opt)}
+              disabled={!!feedback}
+              className="rounded-xl bg-secondary py-3 px-2 text-sm font-bold text-foreground hover:bg-primary hover:text-primary-foreground transition-all disabled:opacity-50"
+            >
+              {opt}
+            </button>
+          ))}
+        </div>
       </div>
 
-      <div className="text-xl font-heading font-bold text-foreground mb-6 min-h-[80px] flex items-center justify-center px-2">
-        {problem.question}
-      </div>
+      <button
+        onClick={() => setShowTable(!showTable)}
+        className="w-full glass-card rounded-xl p-3 text-sm font-semibold text-primary hover:bg-primary/10 transition-colors flex items-center justify-center gap-2"
+      >
+        {showTable ? "🔽 Ocultar Tabla Periódica" : "🔬 Consultar Tabla Periódica"}
+      </button>
 
-      {feedback && <div className="text-lg mb-4 font-semibold">{feedback}</div>}
-
-      <div className="grid grid-cols-2 gap-3">
-        {problem.options.map((opt, i) => (
-          <button
-            key={i}
-            onClick={() => handleAnswer(opt)}
-            disabled={!!feedback}
-            className="rounded-xl bg-secondary py-3 px-2 text-sm font-bold text-foreground hover:bg-primary hover:text-primary-foreground transition-all disabled:opacity-50"
-          >
-            {opt}
-          </button>
-        ))}
-      </div>
+      {showTable && (
+        <div className="glass-card neon-border rounded-xl p-3 sm:p-4">
+          <MiniPeriodicTable />
+        </div>
+      )}
     </div>
   );
 };
