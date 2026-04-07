@@ -128,16 +128,16 @@ const PlayGame = () => {
   const sortedScores = Object.entries(scores).sort((a, b) => b[1] - a[1]);
 
   return (
-    <div className="min-h-screen p-4 max-w-3xl mx-auto">
-      <header className="flex items-center justify-between py-4">
-        <button onClick={handleBack} className="text-muted-foreground hover:text-foreground transition-colors font-heading text-sm">← Salir</button>
-        <h1 className="font-heading text-lg font-bold text-foreground">{game.emoji} {game.name}</h1>
-        <div className="w-12" />
+    <div className="min-h-screen px-3 sm:px-4 pb-8 max-w-3xl mx-auto">
+      <header className="flex items-center justify-between py-3 sm:py-4 gap-2">
+        <button onClick={handleBack} className="text-muted-foreground hover:text-foreground transition-colors font-heading text-xs sm:text-sm shrink-0">← Salir</button>
+        <h1 className="font-heading text-sm sm:text-lg font-bold text-foreground text-center truncate">{game.emoji} {game.name}</h1>
+        <div className="w-8 sm:w-12 shrink-0" />
       </header>
 
-      <div className="flex gap-3 mb-4 justify-center flex-wrap">
+      <div className="flex gap-2 sm:gap-3 mb-3 sm:mb-4 justify-center flex-wrap">
         {room.players.map((p, i) => (
-          <div key={p.id} className={`rounded-lg px-4 py-2 text-sm font-semibold transition-all ${currentPlayerIdx === i && phase !== "results" ? "bg-primary text-primary-foreground neon-border" : "glass-card text-secondary-foreground"}`}>
+          <div key={p.id} className={`rounded-lg px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold transition-all ${currentPlayerIdx === i && phase !== "results" ? "bg-primary text-primary-foreground neon-border" : "glass-card text-secondary-foreground"}`}>
             {p.name}: {scores[p.id] ?? "-"}
           </div>
         ))}
@@ -145,7 +145,7 @@ const PlayGame = () => {
 
       {phase === "playing" && activePlayer && (
         <div>
-          <p className="text-center text-sm text-muted-foreground mb-4">
+          <p className="text-center text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">
             Turno de <span className="text-primary font-semibold">{activePlayer.name}</span>
           </p>
           {GameComponent && <GameComponent key={gameKey} onComplete={handleComplete} variant={game.variant} />}
@@ -153,32 +153,32 @@ const PlayGame = () => {
       )}
 
       {phase === "waiting" && (
-        <div className="glass-card neon-border rounded-xl p-8 text-center">
-          <p className="text-foreground text-lg mb-2">
+        <div className="glass-card neon-border rounded-xl p-5 sm:p-8 text-center">
+          <p className="text-foreground text-base sm:text-lg mb-2">
             {room.players[currentPlayerIdx - 1]?.name} terminó con <span className="text-primary font-bold">{scores[room.players[currentPlayerIdx - 1]?.id] ?? 0}</span> puntos
           </p>
-          <p className="text-muted-foreground mb-4">Siguiente: <span className="text-primary font-semibold">{room.players[currentPlayerIdx]?.name}</span></p>
-          <button onClick={handleNextPlayer} className="rounded-lg bg-primary px-8 py-3 font-heading text-xs font-bold uppercase tracking-widest text-primary-foreground hover:opacity-90">
+          <p className="text-muted-foreground text-sm mb-4">Siguiente: <span className="text-primary font-semibold">{room.players[currentPlayerIdx]?.name}</span></p>
+          <button onClick={handleNextPlayer} className="rounded-lg bg-primary px-6 sm:px-8 py-2.5 sm:py-3 font-heading text-xs font-bold uppercase tracking-widest text-primary-foreground hover:opacity-90">
             ¡Listo!
           </button>
         </div>
       )}
 
       {phase === "results" && (
-        <div className="glass-card neon-border rounded-xl p-8 text-center">
-          <p className="font-heading text-xl font-bold neon-text text-primary mb-4">🎉 ¡Resultados!</p>
-          <div className="flex flex-col gap-2 mb-6">
+        <div className="glass-card neon-border rounded-xl p-5 sm:p-8 text-center">
+          <p className="font-heading text-lg sm:text-xl font-bold neon-text text-primary mb-3 sm:mb-4">🎉 ¡Resultados!</p>
+          <div className="flex flex-col gap-2 mb-4 sm:mb-6">
             {sortedScores.map(([id, s], i) => {
               const p = room.players.find(pl => pl.id === id);
               return (
-                <div key={id} className={`rounded-lg px-4 py-3 flex justify-between ${i === 0 ? "bg-primary/20 neon-border" : "glass-card"}`}>
+                <div key={id} className={`rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 flex justify-between text-sm ${i === 0 ? "bg-primary/20 neon-border" : "glass-card"}`}>
                   <span className="font-semibold">{i === 0 ? "👑 " : ""}{p?.name}</span>
                   <span className="text-primary font-bold">{s} pts</span>
                 </div>
               );
             })}
           </div>
-          <div className="flex gap-3 justify-center">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center">
             <button onClick={handlePlayAgain} className="rounded-lg bg-primary px-6 py-2.5 font-heading text-xs font-bold uppercase text-primary-foreground hover:opacity-90">Jugar otra vez</button>
             <button onClick={() => navigate(`/room/${room.id}`)} className="rounded-lg bg-secondary px-6 py-2.5 font-heading text-xs font-bold uppercase text-secondary-foreground hover:opacity-80">Elegir otro juego</button>
           </div>
