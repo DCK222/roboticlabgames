@@ -116,42 +116,42 @@ const PeriodicTablePage = () => {
   });
 
   return (
-    <div className="min-h-screen p-4">
-      <header className="flex items-center justify-between py-4 max-w-7xl mx-auto">
+    <div className="min-h-screen p-2 sm:p-4">
+      <header className="flex flex-col sm:flex-row items-center justify-between py-3 gap-2 max-w-7xl mx-auto">
         <button onClick={() => navigate("/lobby")} className="text-muted-foreground hover:text-foreground transition-colors font-heading text-sm">
           ← Volver a juegos
         </button>
-        <h1 className="font-heading text-xl font-bold neon-text text-primary">⚗️ Tabla Periódica Interactiva</h1>
-        <div className="w-20" />
+        <h1 className="font-heading text-lg sm:text-xl font-bold neon-text text-primary text-center">⚗️ Tabla Periódica Interactiva</h1>
+        <div className="hidden sm:block w-20" />
       </header>
 
       {/* Legend */}
-      <div className="max-w-7xl mx-auto mb-4 flex flex-wrap gap-2 justify-center">
+      <div className="max-w-7xl mx-auto mb-3 flex flex-wrap gap-1.5 justify-center">
         {Object.entries(CATEGORY_COLORS).map(([cat, clr]) => (
-          <span key={cat} className={`${clr} rounded-md px-2 py-0.5 text-[10px] font-semibold text-foreground`}>{cat}</span>
+          <span key={cat} className={`${clr} rounded-md px-2 py-0.5 text-[9px] sm:text-[10px] font-semibold text-foreground`}>{cat}</span>
         ))}
       </div>
 
       {/* Table Grid */}
-      <div className="max-w-7xl mx-auto overflow-x-auto pb-4">
-        <div className="inline-grid gap-[2px]" style={{ gridTemplateColumns: "repeat(18, minmax(52px, 1fr))" }}>
+      <div className="w-full overflow-x-auto pb-4 flex justify-center">
+        <div className="inline-grid gap-[1px] sm:gap-[2px]" style={{ gridTemplateColumns: "repeat(18, 1fr)" }}>
           {grid.map((row, ri) =>
             row.map((el, ci) => {
               if (!el) {
-                return <div key={`${ri}-${ci}`} className="w-[52px] h-[52px]" />;
+                return <div key={`${ri}-${ci}`} className="w-7 h-7 sm:w-10 sm:h-10 md:w-[52px] md:h-[52px]" />;
               }
               const isSelected = selected?.z === el.z;
               return (
                 <button
                   key={el.z}
                   onClick={() => setSelected(isSelected ? null : el)}
-                  className={`w-[52px] h-[52px] rounded-md flex flex-col items-center justify-center transition-all border ${
+                  className={`w-7 h-7 sm:w-10 sm:h-10 md:w-[52px] md:h-[52px] rounded-sm sm:rounded-md flex flex-col items-center justify-center transition-all border ${
                     isSelected ? "neon-border scale-110 z-10" : "border-border/50 hover:border-primary/50"
                   } ${CATEGORY_COLORS[el.category] || "bg-secondary"}`}
                 >
-                  <span className="text-[9px] text-muted-foreground leading-none">{el.z}</span>
-                  <span className="text-sm font-bold text-foreground leading-none">{el.sym}</span>
-                  <span className="text-[7px] text-muted-foreground leading-none truncate w-full text-center">{el.name}</span>
+                  <span className="text-[6px] sm:text-[8px] md:text-[9px] text-muted-foreground leading-none">{el.z}</span>
+                  <span className="text-[8px] sm:text-xs md:text-sm font-bold text-foreground leading-none">{el.sym}</span>
+                  <span className="hidden sm:block text-[6px] md:text-[7px] text-muted-foreground leading-none truncate w-full text-center">{el.name}</span>
                 </button>
               );
             })
