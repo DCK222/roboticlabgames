@@ -8,6 +8,7 @@ import NameEntry from "./pages/NameEntry";
 import Lobby from "./pages/Lobby";
 import RoomView from "./pages/RoomView";
 import PlayGame from "./pages/PlayGame";
+import PeriodicTablePage from "./pages/PeriodicTablePage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
             <Route path="/lobby" element={<Lobby />} />
             <Route path="/room/:roomId" element={<RoomView />} />
             <Route path="/play/:roomId/:gameId" element={<PlayGame />} />
+            <Route path="/tabla-periodica" element={<PeriodicTablePage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </GameProvider>
