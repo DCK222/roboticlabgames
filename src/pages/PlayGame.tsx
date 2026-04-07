@@ -27,8 +27,11 @@ import MemoryProportionGame from "@/games/MemoryProportionGame";
 import GestureGame from "@/games/GestureGame";
 import WordChainGame from "@/games/WordChainGame";
 import ObjectMemoryGame from "@/games/ObjectMemoryGame";
+import MathGame from "@/games/MathGame";
+import LogicGame from "@/games/LogicGame";
+import ChemistryGame from "@/games/ChemistryGame";
 
-const GAME_COMPONENTS: Record<string, React.ComponentType<{ onComplete: (score: number) => void }>> = {
+const GAME_COMPONENTS: Record<string, React.ComponentType<{ onComplete: (score: number) => void; variant?: string }>> = {
   memory: MemoryGame,
   simon: SimonGame,
   sequence: SequenceGame,
@@ -54,6 +57,9 @@ const GAME_COMPONENTS: Record<string, React.ComponentType<{ onComplete: (score: 
   gesture: GestureGame,
   wordchain: WordChainGame,
   objects: ObjectMemoryGame,
+  math: MathGame,
+  logic: LogicGame,
+  chemistry: ChemistryGame,
 };
 
 const PlayGame = () => {
@@ -131,14 +137,7 @@ const PlayGame = () => {
 
       <div className="flex gap-3 mb-4 justify-center flex-wrap">
         {room.players.map((p, i) => (
-          <div
-            key={p.id}
-            className={`rounded-lg px-4 py-2 text-sm font-semibold transition-all ${
-              currentPlayerIdx === i && phase !== "results"
-                ? "bg-primary text-primary-foreground neon-border"
-                : "glass-card text-secondary-foreground"
-            }`}
-          >
+          <div key={p.id} className={`rounded-lg px-4 py-2 text-sm font-semibold transition-all ${currentPlayerIdx === i && phase !== "results" ? "bg-primary text-primary-foreground neon-border" : "glass-card text-secondary-foreground"}`}>
             {p.name}: {scores[p.id] ?? "-"}
           </div>
         ))}
@@ -149,7 +148,7 @@ const PlayGame = () => {
           <p className="text-center text-sm text-muted-foreground mb-4">
             Turno de <span className="text-primary font-semibold">{activePlayer.name}</span>
           </p>
-          {GameComponent && <GameComponent key={gameKey} onComplete={handleComplete} />}
+          {GameComponent && <GameComponent key={gameKey} onComplete={handleComplete} variant={game.variant} />}
         </div>
       )}
 
@@ -159,10 +158,7 @@ const PlayGame = () => {
             {room.players[currentPlayerIdx - 1]?.name} terminó con <span className="text-primary font-bold">{scores[room.players[currentPlayerIdx - 1]?.id] ?? 0}</span> puntos
           </p>
           <p className="text-muted-foreground mb-4">Siguiente: <span className="text-primary font-semibold">{room.players[currentPlayerIdx]?.name}</span></p>
-          <button
-            onClick={handleNextPlayer}
-            className="rounded-lg bg-primary px-8 py-3 font-heading text-xs font-bold uppercase tracking-widest text-primary-foreground hover:opacity-90"
-          >
+          <button onClick={handleNextPlayer} className="rounded-lg bg-primary px-8 py-3 font-heading text-xs font-bold uppercase tracking-widest text-primary-foreground hover:opacity-90">
             ¡Listo!
           </button>
         </div>
@@ -183,12 +179,8 @@ const PlayGame = () => {
             })}
           </div>
           <div className="flex gap-3 justify-center">
-            <button onClick={handlePlayAgain} className="rounded-lg bg-primary px-6 py-2.5 font-heading text-xs font-bold uppercase text-primary-foreground hover:opacity-90">
-              Jugar otra vez
-            </button>
-            <button onClick={() => navigate(`/room/${room.id}`)} className="rounded-lg bg-secondary px-6 py-2.5 font-heading text-xs font-bold uppercase text-secondary-foreground hover:opacity-80">
-              Elegir otro juego
-            </button>
+            <button onClick={handlePlayAgain} className="rounded-lg bg-primary px-6 py-2.5 font-heading text-xs font-bold uppercase text-primary-foreground hover:opacity-90">Jugar otra vez</button>
+            <button onClick={() => navigate(`/room/${room.id}`)} className="rounded-lg bg-secondary px-6 py-2.5 font-heading text-xs font-bold uppercase text-secondary-foreground hover:opacity-80">Elegir otro juego</button>
           </div>
         </div>
       )}
