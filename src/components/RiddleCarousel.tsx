@@ -79,6 +79,7 @@ const LEVEL_COLORS: Record<number, string> = {
 };
 
 export default function RiddleCarousel() {
+  const [open, setOpen] = useState(false);
   const [current, setCurrent] = useState(0);
   const [revealed, setRevealed] = useState(false);
 
@@ -96,83 +97,113 @@ export default function RiddleCarousel() {
         🎯 Adivinanzas con Números
       </h2>
 
-      <div className={`glass-card neon-border rounded-2xl p-4 sm:p-6 md:p-8 bg-gradient-to-br ${LEVEL_COLORS[riddle.level]}`}>
-        {/* Level badge + counter */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-4">
-          <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground bg-background/50 rounded-full px-3 py-1">
-            {LEVEL_LABELS[riddle.level]}
-          </span>
-          <span className="text-[10px] sm:text-xs text-muted-foreground font-mono">
-            {current + 1} / {total}
-          </span>
+      <button
+        onClick={() => setOpen(true)}
+        className="glass-card neon-border rounded-xl px-4 sm:px-6 py-3 sm:py-4 flex items-center gap-3 hover:opacity-90 transition-all w-full sm:w-auto"
+      >
+        <span className="text-2xl sm:text-3xl">🎯</span>
+        <div className="text-left">
+          <span className="font-heading text-xs sm:text-sm font-bold text-foreground">50 Adivinanzas con Números</span>
+          <p className="text-[10px] sm:text-xs text-muted-foreground">Pon a prueba tu ingenio con acertijos matemáticos</p>
         </div>
+      </button>
 
-        {/* Question */}
-        <div className="min-h-[100px] sm:min-h-[120px] flex items-center justify-center">
-          <p className="text-sm sm:text-base md:text-lg text-foreground text-center leading-relaxed font-medium">
-            {riddle.question}
-          </p>
-        </div>
+      {open && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6" onClick={() => setOpen(false)}>
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
 
-        {/* Answer */}
-        <div className="flex justify-center my-4 sm:my-6">
-          {revealed ? (
-            <div className="glass-card rounded-xl px-4 sm:px-6 py-3 sm:py-4 border border-primary/30 animate-in fade-in zoom-in-95 duration-300">
-              <p className="text-primary font-heading text-sm sm:text-base md:text-lg text-center font-bold">
-                ✅ {riddle.answer}
+          {/* Modal */}
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className={`relative z-10 w-full max-w-lg glass-card neon-border rounded-2xl p-4 sm:p-6 md:p-8 bg-gradient-to-br ${LEVEL_COLORS[riddle.level]} animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto`}
+          >
+            {/* Close */}
+            <button
+              onClick={() => setOpen(false)}
+              className="absolute top-3 right-3 text-muted-foreground hover:text-foreground text-lg leading-none"
+            >
+              ✕
+            </button>
+
+            {/* Level badge + counter */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-4 pr-6">
+              <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground bg-background/50 rounded-full px-3 py-1">
+                {LEVEL_LABELS[riddle.level]}
+              </span>
+              <span className="text-[10px] sm:text-xs text-muted-foreground font-mono">
+                {current + 1} / {total}
+              </span>
+            </div>
+
+            {/* Question */}
+            <div className="min-h-[100px] sm:min-h-[120px] flex items-center justify-center">
+              <p className="text-sm sm:text-base md:text-lg text-foreground text-center leading-relaxed font-medium">
+                {riddle.question}
               </p>
             </div>
-          ) : (
-            <button
-              onClick={() => setRevealed(true)}
-              className="flex items-center gap-2 bg-primary text-primary-foreground rounded-xl px-5 sm:px-6 py-2.5 sm:py-3 font-heading text-xs sm:text-sm font-bold hover:opacity-90 transition-all active:scale-95"
-            >
-              <Eye className="w-4 h-4" />
-              Resolver
-            </button>
-          )}
+
+            {/* Answer */}
+            <div className="flex justify-center my-4 sm:my-6">
+              {revealed ? (
+                <div className="glass-card rounded-xl px-4 sm:px-6 py-3 sm:py-4 border border-primary/30 animate-in fade-in zoom-in-95 duration-300">
+                  <p className="text-primary font-heading text-sm sm:text-base md:text-lg text-center font-bold">
+                    ✅ {riddle.answer}
+                  </p>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setRevealed(true)}
+                  className="flex items-center gap-2 bg-primary text-primary-foreground rounded-xl px-5 sm:px-6 py-2.5 sm:py-3 font-heading text-xs sm:text-sm font-bold hover:opacity-90 transition-all active:scale-95"
+                >
+                  <Eye className="w-4 h-4" />
+                  Resolver
+                </button>
+              )}
+            </div>
+
+            {/* Navigation */}
+            <div className="flex items-center justify-between gap-2">
+              <button
+                onClick={() => go(-1)}
+                className="flex items-center gap-1 glass-card rounded-lg px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-foreground hover:opacity-80 transition-all active:scale-95"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                <span className="hidden sm:inline">Anterior</span>
+              </button>
+
+              {revealed && (
+                <button
+                  onClick={() => setRevealed(false)}
+                  className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <EyeOff className="w-3 h-3" />
+                  Ocultar
+                </button>
+              )}
+
+              <button
+                onClick={() => go(1)}
+                className="flex items-center gap-1 glass-card rounded-lg px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-foreground hover:opacity-80 transition-all active:scale-95"
+              >
+                <span className="hidden sm:inline">Siguiente</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Dots */}
+            <div className="flex justify-center gap-1 mt-4 flex-wrap">
+              {RIDDLES.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => { setRevealed(false); setCurrent(i); }}
+                  className={`w-2 h-2 rounded-full transition-all ${i === current ? "bg-primary scale-125" : "bg-muted-foreground/30 hover:bg-muted-foreground/50"}`}
+                />
+              ))}
+            </div>
+          </div>
         </div>
-
-        {/* Navigation */}
-        <div className="flex items-center justify-between gap-2">
-          <button
-            onClick={() => go(-1)}
-            className="flex items-center gap-1 glass-card rounded-lg px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-foreground hover:opacity-80 transition-all active:scale-95"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            <span className="hidden sm:inline">Anterior</span>
-          </button>
-
-          {revealed && (
-            <button
-              onClick={() => setRevealed(false)}
-              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <EyeOff className="w-3 h-3" />
-              Ocultar
-            </button>
-          )}
-
-          <button
-            onClick={() => go(1)}
-            className="flex items-center gap-1 glass-card rounded-lg px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-foreground hover:opacity-80 transition-all active:scale-95"
-          >
-            <span className="hidden sm:inline">Siguiente</span>
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-
-        {/* Dots progress */}
-        <div className="flex justify-center gap-1 mt-4 flex-wrap">
-          {RIDDLES.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => { setRevealed(false); setCurrent(i); }}
-              className={`w-2 h-2 rounded-full transition-all ${i === current ? "bg-primary scale-125" : "bg-muted-foreground/30 hover:bg-muted-foreground/50"}`}
-            />
-          ))}
-        </div>
-      </div>
+      )}
     </div>
   );
 }
