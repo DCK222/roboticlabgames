@@ -84,6 +84,8 @@ const Lobby = () => {
           </div>
         );
       })}
+
+      <RiddleCarousel />
     </div>
   );
 };
