@@ -156,8 +156,8 @@ export default function RiddleCarousel() {
             {/* Answer */}
             <div className="flex justify-center my-4 sm:my-6">
               {revealed ? (
-                <div className="glass-card rounded-xl px-4 sm:px-6 py-3 sm:py-4 border border-primary/30 animate-in fade-in zoom-in-95 duration-300">
-                  <p className="text-primary font-heading text-sm sm:text-base md:text-lg text-center font-bold">
+                <div className={`glass-card rounded-xl px-4 sm:px-6 py-3 sm:py-4 border border-primary/30 animate-in fade-in zoom-in-95 duration-300 ${expanded ? "px-8 py-6" : ""}`}>
+                  <p className={`text-primary font-heading text-center font-bold ${expanded ? "text-lg sm:text-xl md:text-2xl" : "text-sm sm:text-base md:text-lg"}`}>
                     ✅ {riddle.answer}
                   </p>
                 </div>
