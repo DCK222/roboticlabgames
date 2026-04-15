@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, Eye, EyeOff } from "lucide-react";
+import { ChevronLeft, ChevronRight, Eye, EyeOff, Maximize2, Minimize2 } from "lucide-react";
 
 interface Riddle {
   question: string;
@@ -82,6 +82,7 @@ export default function RiddleCarousel() {
   const [open, setOpen] = useState(false);
   const [current, setCurrent] = useState(0);
   const [revealed, setRevealed] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
   const riddle = RIDDLES[current];
   const total = RIDDLES.length;
@@ -116,15 +117,24 @@ export default function RiddleCarousel() {
           {/* Modal */}
           <div
             onClick={(e) => e.stopPropagation()}
-            className={`relative z-10 w-full max-w-3xl glass-card neon-border rounded-2xl p-5 sm:p-8 md:p-10 bg-gradient-to-br ${LEVEL_COLORS[riddle.level]} animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto`}
+            className={`relative z-10 glass-card neon-border rounded-2xl p-5 sm:p-8 md:p-10 bg-gradient-to-br ${LEVEL_COLORS[riddle.level]} animate-in fade-in zoom-in-95 duration-200 overflow-y-auto transition-all ${expanded ? "w-[95vw] h-[95vh] max-w-none" : "w-full max-w-3xl max-h-[90vh]"}`}
           >
-            {/* Close */}
-            <button
-              onClick={() => setOpen(false)}
-              className="absolute top-3 right-3 text-muted-foreground hover:text-foreground text-lg leading-none"
-            >
-              ✕
-            </button>
+            {/* Close + Expand */}
+            <div className="absolute top-3 right-3 flex items-center gap-2">
+              <button
+                onClick={() => setExpanded((e) => !e)}
+                className="text-muted-foreground hover:text-foreground transition-colors"
+                title={expanded ? "Reducir" : "Ampliar"}
+              >
+                {expanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+              </button>
+              <button
+                onClick={() => setOpen(false)}
+                className="text-muted-foreground hover:text-foreground text-lg leading-none"
+              >
+                ✕
+              </button>
+            </div>
 
             {/* Level badge + counter */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-4 pr-6">
