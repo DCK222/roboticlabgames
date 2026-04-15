@@ -147,8 +147,8 @@ export default function RiddleCarousel() {
             </div>
 
             {/* Question */}
-            <div className="min-h-[100px] sm:min-h-[120px] flex items-center justify-center">
-              <p className="text-sm sm:text-base md:text-lg text-foreground text-center leading-relaxed font-medium">
+            <div className={`flex items-center justify-center ${expanded ? "min-h-[200px]" : "min-h-[100px] sm:min-h-[120px]"}`}>
+              <p className={`text-foreground text-center leading-relaxed font-medium ${expanded ? "text-xl sm:text-2xl md:text-3xl" : "text-sm sm:text-base md:text-lg"}`}>
                 {riddle.question}
               </p>
             </div>
