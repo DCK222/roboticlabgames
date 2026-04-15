@@ -116,7 +116,7 @@ export default function RiddleCarousel() {
           {/* Modal */}
           <div
             onClick={(e) => e.stopPropagation()}
-            className={`relative z-10 w-full max-w-lg glass-card neon-border rounded-2xl p-4 sm:p-6 md:p-8 bg-gradient-to-br ${LEVEL_COLORS[riddle.level]} animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto`}
+            className={`relative z-10 w-full max-w-3xl glass-card neon-border rounded-2xl p-5 sm:p-8 md:p-10 bg-gradient-to-br ${LEVEL_COLORS[riddle.level]} animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto`}
           >
             {/* Close */}
             <button
