@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useGame } from "@/contexts/GameContext";
 import { GAMES } from "@/data/games";
 import logo from "@/assets/logo.webp";
+import RiddleCarousel from "@/components/RiddleCarousel";
 
 const CATEGORY_LABELS: Record<string, string> = {
   memoria: "🧠 Memoria y Secuencias",
@@ -83,6 +84,8 @@ const Lobby = () => {
           </div>
         );
       })}
+
+      <RiddleCarousel />
     </div>
   );
 };
