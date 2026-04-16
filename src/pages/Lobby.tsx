@@ -87,6 +87,7 @@ const Lobby = () => {
       })}
 
       <RiddleCarousel />
+      <VisualRiddleCarousel />
     </div>
   );
 };
