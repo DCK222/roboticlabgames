@@ -4,6 +4,7 @@ import { useGame } from "@/contexts/GameContext";
 import { GAMES } from "@/data/games";
 import logo from "@/assets/logo.webp";
 import RiddleCarousel from "@/components/RiddleCarousel";
+import VisualRiddleCarousel from "@/components/VisualRiddleCarousel";
 
 const CATEGORY_LABELS: Record<string, string> = {
   memoria: "🧠 Memoria y Secuencias",
