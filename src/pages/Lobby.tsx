@@ -5,6 +5,7 @@ import { GAMES } from "@/data/games";
 import logo from "@/assets/logo.webp";
 import RiddleCarousel from "@/components/RiddleCarousel";
 import VisualRiddleCarousel from "@/components/VisualRiddleCarousel";
+import SpanishDeckGames from "@/components/SpanishDeckGames";
 
 const CATEGORY_LABELS: Record<string, string> = {
   memoria: "🧠 Memoria y Secuencias",
@@ -88,6 +89,7 @@ const Lobby = () => {
 
       <RiddleCarousel />
       <VisualRiddleCarousel />
+      <SpanishDeckGames />
     </div>
   );
 };
